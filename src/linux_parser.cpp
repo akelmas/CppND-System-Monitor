@@ -35,13 +35,13 @@ string LinuxParser::OperatingSystem() {
 
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::Kernel() {
-  string os, kernel;
+  string os,label, kernel;
   string line;
   std::ifstream stream(kProcDirectory + kVersionFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
-    linestream >> os >> kernel;
+    linestream >> os >> label >> kernel;
   }
   return kernel;
 }
@@ -167,24 +167,26 @@ int LinuxParser::RunningProcesses() {
  }
 
 
- float LinuxParser::CurrentCpuUtilization(){
-   string key, value;
+ float LinuxParser::CurrentCpuUtilization(long int &PrevIdle,long int &PrevNonIdle,long int &PrevTotal){
+   string label,user,nice,system,idle,iowait,irq,softirq,steal,guest,guest_nice;
   string line;
+  float result=0.0;
   std::ifstream stream(kProcDirectory + kStatFilename);
   if (stream.is_open()) {
-    while (std::getline(stream, line))
-    {
-      /* code */    
-      std::istringstream linestream(line);
-      linestream >> key >> value;//That will fail on all the lines that are not key-value shape
-      if(key=="procs_running")
-      {
-        return stoi(value);
-      }
-    }
-  
+    std::getline(stream, line);
+    std::istringstream linestream(line);
+      linestream >> label >>user>>nice>>system>>idle>>iowait>>irq>>softirq>>steal>>guest>>guest_nice;
+    long int Idle=stol(idle)+stol(iowait);
+    long int NonIdle=stol(user)+stol(nice)+stol(system)+stol(irq)+stol(softirq)+stol(steal);
+    long int Total=Idle+NonIdle;
+    long int totald=Total-PrevTotal;
+    long int idled=Idle-PrevIdle;
+    result=((float)(totald-idled)/(float)totald);
+    PrevIdle=Idle;
+    PrevNonIdle=NonIdle;
+    PrevTotal=Total;
   }
-  return 0;
+  return result;
 
  }
 
