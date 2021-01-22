@@ -129,7 +129,7 @@ float LinuxParser::CpuUtilization(int pid) {
     std::getline(stream, line);
     std::istringstream linestream(line);
     int index=1;
-    while (index++<14)
+    while (index++!=14)
     {
       linestream >> dummy;
     }
@@ -293,21 +293,23 @@ string LinuxParser::User(int pid) {
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::UpTime(int pid) { 
-  string uptime;
-  string key, value, unit,dummy;
-  string line;
-  std::ifstream stream(kProcDirectory +"/"+ std::to_string(pid)+kStatFilename);
-  if (stream.is_open()) {
-    std::getline(stream, line);
-    std::istringstream linestream(line);
-    int index=1;
-    while (index++<22)
-    {
-      linestream >> dummy;
+    string utime,stime,cutime,cstime; 
+    string dummy;
+    string line;
+    std::ifstream stream(kProcDirectory +"/"+ std::to_string(pid)+kStatFilename);
+    if (stream.is_open()) {
+      std::getline(stream, line);
+      std::istringstream linestream(line);
+      int index=1;
+      while (index++!=14)
+      {
+        linestream >> dummy;
+      }
+      linestream>>utime>>stime>>cutime>>cstime;
     }
-    linestream>>uptime;
-    return stol(uptime)/sysconf(_SC_CLK_TCK);
+    //CALCULATION
+    long Hertz= sysconf(_SC_CLK_TCK);
+    long total_time=stol(utime)+stol(stime);
+    total_time += stol(cstime)+stol(cutime);
+    return total_time/Hertz;
   }
-  
-  
-  return 0; }
