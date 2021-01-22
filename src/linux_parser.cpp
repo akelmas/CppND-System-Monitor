@@ -300,7 +300,7 @@ long LinuxParser::UpTime(int pid) {
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
-    int index=1;
+    int index=0;
     while (index++<22)
     {
       linestream >> dummy;
