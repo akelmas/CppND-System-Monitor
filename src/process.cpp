@@ -29,4 +29,4 @@ string Process::User() const{ return user; }
 long int Process::UpTime()const { return up_time; }
 
 //  Overload the "less than" comparison operator for Process objects
-bool Process::operator<(Process const& a) const { return cpu_utilization>a.CpuUtilization(); }
+bool Process::operator<(Process const& a) const { return cpu_utilization<a.cpu_utilization; }

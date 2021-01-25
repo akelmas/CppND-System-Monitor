@@ -106,17 +106,7 @@ long LinuxParser::UpTime() {
   return 0L;
 }
 
-//  Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
 
-//  Read and return the number of active jiffies for a PID
-long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
-
-//  Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
-
-//  Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
 
 //  Read and return CPU utilization
 float LinuxParser::CpuUtilization(int pid) {

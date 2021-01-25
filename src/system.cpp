@@ -29,9 +29,9 @@ vector<Process>& System::Processes() {
         p.Ram(LinuxParser::Ram(p.Pid()));
         p.User(LinuxParser::User(p.Pid()));
         p.UpTime(LinuxParser::UpTime(p.Pid()));
-        processes_.push_back(p);
+        processes_.emplace_back(p);
     }
-    std::sort(processes_.begin(),processes_.end());
+    std::sort(processes_.rbegin(),processes_.rend());
 
     return processes_; }
 
